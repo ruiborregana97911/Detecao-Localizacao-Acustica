@@ -1,0 +1,1 @@
+versões de detecao real time, mas com buffer circular mal feito, detecao de energia de forma errada e enquadramento do sinal de som mal conseguido!!!!!!!!
