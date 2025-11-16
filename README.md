@@ -71,7 +71,8 @@ Todo o processo de classificação e análise de performance está documentado n
 ---
 
 ## Nota sobre vídeos das experiências
-Devido às limitações do GitHub (tamanho máximo de ficheiro), os vídeos das experiências foram movidos para armazenamento externo. O link será disponibilizado no documento da dissertação.
+Devido às limitações do GitHub (tamanho máximo de ficheiro), os vídeos das experiências foram movidos para armazenamento externo. 
+O link: https://uapt33090-my.sharepoint.com/:f:/g/personal/ruiborregana_ua_pt/EraEKkLnTeNKqOoyXisBgccB-yzx68c1q0EQzDNkG2Yyfg?e=f0m8Ue
 
 ---
 
