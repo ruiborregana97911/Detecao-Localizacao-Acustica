@@ -1,0 +1,138 @@
+clc; clearvars; close all;
+
+%% --- Inserir manualmente as posições reais e estimadas ---
+% Exemplo: cada linha é um impacto (x [cm], y [cm])
+pos_real = [
+    26.513 6.922;
+    39.158 24.645;
+    36.459 15.516;
+    12.393 33.815;
+    58.311 24.174;
+    57.971 10.347;
+    27.730 30.759;
+    30.600 16.660;
+    66.416 38.706;
+    8.514 26.817;
+    49.944 9.301;
+    6.467 9.039;
+    34.557 20.964;
+    23.484 17.949;
+    68.744 19.225;
+    3.689 14.721;
+    8.232 42.991;
+    39.673 19.817;
+    13.736 21.824;
+    62.511 7.861;
+    53.892 31.700;
+    13.459 9.862;
+    39.352 8.066;
+    38.465 37.093;
+    48.568 2.460;
+    14.555 35.986;
+    35.388 17.989;
+    68.180 3.206;
+    38.832 20.398;
+    6.317 27.868
+];
+
+pos_est = [
+    26.59 7.28;
+    39.16 24.33;
+    36.44 15.88;
+    12.59 33.64;
+    57.80 24.40;
+    56.82 11.21;
+    27.80 30.56;
+    30.94 16.73;
+    66.22 38.38;
+    9.31 26.62;
+    49.63 9.52;
+    6.95 9.15;
+    34.72 21.31;
+    23.81 18.27;
+    68.68 19.55;
+    3.34 15.42;
+    8.79 42.87;
+    39.58 20.28;
+    13.88 22.08;
+    62.24 8.14;
+    53.89 31.81;
+    13.72 10.30;
+    39.34 8.38;
+    38.52 37.08;
+    48.30 2.25;
+    14.66 36.48;
+    35.33 18.21;
+    68.01 3.46;
+    39.35 19.12;
+    5.86 28.7
+];
+
+%% --- Verificar compatibilidade ---
+N_real = size(pos_real,1);
+N_est  = size(pos_est,1);
+if N_real ~= N_est
+    error('⚠️ O número de pontos reais (%d) e estimados (%d) deve ser igual!', N_real, N_est);
+end
+
+N_use = N_real;
+x_real = pos_real(:,1);
+y_real = pos_real(:,2);
+x_est  = pos_est(:,1);
+y_est  = pos_est(:,2);
+
+%% --- Calcular erro euclidiano ---
+erro_m = sqrt((x_est - x_real).^2 + (y_est - y_real).^2);
+
+%% --- Métricas simples ---
+MAE = mean(erro_m);
+STD = std(erro_m);
+Bias_x = mean(x_est - x_real);
+Bias_y = mean(y_est - y_real);
+Erro_max = max(erro_m);
+Erro_min = min(erro_m);
+
+fprintf('\n--- 📊 Métricas de desempenho ---\n');
+fprintf('Número de pares usados: %d\n', N_use);
+fprintf('MAE: %.4f cm | STD: %.4f cm\n', MAE, STD);
+fprintf('Bias x: %.4f cm | Bias y: %.4f cm\n', Bias_x, Bias_y);
+fprintf('Erro máximo: %.4f cm | Erro mínimo: %.4f cm\n', Erro_max, Erro_min);
+
+%% --- Tabela resumo ---
+paired_table = table((1:N_use)', x_real, y_real, x_est, y_est, erro_m, ...
+    'VariableNames', {'Indice','x_real','y_real','x_est','y_est','erro_m'});
+
+%% --- Figuras ---
+% 1️⃣ Scatter plot real vs estimado
+figure;
+scatter(x_real, y_real, 80, 's','filled'); hold on;
+scatter(x_est, y_est, 60, 'o');
+for k = 1:N_use
+    plot([x_real(k), x_est(k)], [y_real(k), y_est(k)], '-k','LineWidth',0.6);
+end
+xlabel('x [cm]'); ylabel('y [cm]');
+title('Posição real vs estimada');
+legend('Real','Estimado','Location','best');
+axis equal; grid on;
+
+% 2️⃣ Histograma de erros
+figure;
+histogram(erro_m, 15);
+xlabel('Erro [cm]'); ylabel('Contagem');
+title('Distribuição do erro de localização');
+
+% 3️⃣ Heatmap de erros
+figure;
+scatter(x_real, y_real, 80, erro_m, 'filled');
+colorbar; colormap('parula');
+xlabel('x [cm]'); ylabel('y [cm]');
+title('Erro por posição real');
+axis equal; grid on;
+
+% 4️⃣ Erro por índice (barras)
+figure;
+bar(1:N_use, erro_m);
+xlabel('Índice do impacto'); ylabel('Erro [cm]');
+title('Erro euclidiano por impacto');
+grid on;
+
